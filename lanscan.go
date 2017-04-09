@@ -24,8 +24,8 @@ package lanscan
 import (
 	"errors"
 	"fmt"
-	"time"
 	"net"
+	"time"
 )
 
 const maxAddressesPerSubnet = 1000
@@ -46,7 +46,6 @@ func ScanLinkLocal(network string, port int, threads int, timeout time.Duration)
 	for worker := 0; worker < threads; worker++ {
 		go ProbeHosts(hosts, port, network, results, done)
 	}
-
 
 	for _, current := range LinkLocalAddresses(network) {
 		allIPs := CalculateSubnetIPs(current, maxAddressesPerSubnet)

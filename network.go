@@ -94,7 +94,7 @@ func CalculateSubnetIPs(cidr string, maxAddresses int) []string {
 	for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
 		ips = append(ips, ip.String())
 		if len(ips) > maxAddresses {
-			return ips[1:len(ips)] // remove network address
+			return ips[1:] // remove network address
 		}
 	}
 
