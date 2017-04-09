@@ -22,7 +22,6 @@
 package lanscan
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"time"
@@ -32,11 +31,11 @@ const maxAddressesPerSubnet = 1000
 
 func ScanLinkLocal(network string, port int, threads int, timeout time.Duration) ([]string, error) {
 	if !validateNetwork(network) {
-		return []string{}, errors.New(fmt.Sprintf("Invalid network %s (Valid options: %v)", network, validNetworks))
+		return []string{}, fmt.Errorf("Invalid network %s (Valid options: %v)", network, validNetworks)
 	}
 
 	if port < 0 || port > 65535 {
-		return []string{}, errors.New(fmt.Sprintf("Invalid port %d (Valid options: 0 - 65535)", port))
+		return []string{}, fmt.Errorf("Invalid port %d (Valid options: 0 - 65535)", port)
 	}
 
 	hosts := make(chan string, 1000)
