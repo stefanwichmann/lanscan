@@ -30,45 +30,38 @@ import (
 const maxAddressesPerSubnet = 1000
 
 func ScanLinkLocal(network string, port int, threads int, timeout time.Duration) ([]string, error) {
+	// Validate parameters
 	if !validateNetwork(network) {
 		return []string{}, fmt.Errorf("Invalid network %s (Valid options: %v)", network, validNetworks)
 	}
-
 	if port < 0 || port > 65535 {
 		return []string{}, fmt.Errorf("Invalid port %d (Valid options: 0 - 65535)", port)
 	}
 
-	hosts := make(chan string, 1000)
-	results := make(chan string, 1000)
+	hosts := make(chan string, 100)
+	results := make(chan string, 10)
 	done := make(chan bool, threads)
 
+	// Start workers
 	for worker := 0; worker < threads; worker++ {
 		go ProbeHosts(hosts, port, network, results, done)
 	}
 
+	// Generate host list to check
 	for _, current := range LinkLocalAddresses(network) {
 		allIPs := CalculateSubnetIPs(current, maxAddressesPerSubnet)
-		ip, _, err := net.ParseCIDR(current)
-		if err != nil {
-			continue
-		}
-		startIndex := 0
-		for index, value := range allIPs {
-			if value == ip.String() {
-				startIndex = index
-				break
-			}
-		}
 
+		startIndex := findIndex(current, allIPs)
 		for i := startIndex + 1; i < len(allIPs); i++ {
-			hosts <- allIPs[i]
+			hosts <- allIPs[i] // add all following hosts to channel
 			if (startIndex - i) >= 0 {
-				hosts <- allIPs[startIndex-i]
+				hosts <- allIPs[startIndex-i] // add all previous hosts to channel
 			}
 		}
 	}
 	close(hosts)
 
+	// collect responses
 	var responses = []string{}
 	for {
 		select {
@@ -92,4 +85,17 @@ func validateNetwork(network string) bool {
 		}
 	}
 	return false
+}
+
+func findIndex(candidate string, hosts []string) int {
+	ip, _, err := net.ParseCIDR(candidate)
+	if err != nil {
+		return 0
+	}
+	for index, value := range hosts {
+		if value == ip.String() {
+			return index
+		}
+	}
+	return 0
 }
