@@ -8,7 +8,7 @@ Lanscan is a small, blazing fast and easy to use golang library to scan for host
 
 # Features
 - [x] Automatic restriction to your link local network
-- [x] Automatic prioritisation of nearby IPs
+- [x] Automatic prioritization of nearby IPs
 - [x] Automatic scan on all network interfaces
 - [x] Automatic adaption to your network latency
 - [x] Full support for parallel scanning
