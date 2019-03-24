@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 Stefan Wichmann
+// Copyright (c) 2019 Stefan Wichmann
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+// Package lanscan contains a blazing fast port scanner for local networks
 package lanscan
 
 import "net"
@@ -34,6 +36,7 @@ var linkLocalCIDR = []string{
 
 var validNetworks = []string{"tcp", "tcp4", "tcp6", "udp", "udp4", "udp6", "ip", "ip4", "ip6", "unix", "unixgram", "unixpacket"}
 
+// IsLinkLocalAddress will check if the given IP address is considered link local.
 func IsLinkLocalAddress(ip net.IP) bool {
 	for _, curnet := range linkLocalCIDR {
 		_, ipnet, err := net.ParseCIDR(curnet)
@@ -49,6 +52,7 @@ func IsLinkLocalAddress(ip net.IP) bool {
 	return false
 }
 
+// LinkLocalAddresses returns all link local IP addresses for the given network.
 func LinkLocalAddresses(network string) []string {
 	var addrs = []string{}
 	interfaces, err := net.Interfaces()
@@ -83,6 +87,7 @@ func LinkLocalAddresses(network string) []string {
 	return addrs
 }
 
+// CalculateSubnetIPs will calculate a given maximum of addresses in the given cidr address space.
 func CalculateSubnetIPs(cidr string, maxAddresses int) []string {
 	var ips = []string{}
 

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 Stefan Wichmann
+// Copyright (c) 2019 Stefan Wichmann
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+// Package lanscan contains a blazing fast port scanner for local networks
 package lanscan
 
 import (
@@ -29,6 +31,9 @@ import (
 
 const maxAddressesPerSubnet = 1000
 
+// ScanLinkLocal scans all link local networks on all interfaces found on the current computer for hosts
+// responding on the given port. It will use the given amout of threads and will return after the given timeout
+// or after finishing the scan.
 func ScanLinkLocal(network string, port int, threads int, timeout time.Duration) ([]string, error) {
 	// Validate parameters
 	if !validateNetwork(network) {

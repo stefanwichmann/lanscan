@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 Stefan Wichmann
+// Copyright (c) 2019 Stefan Wichmann
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+// Package lanscan contains a blazing fast port scanner for local networks
 package lanscan
 
 import "time"
@@ -27,6 +29,8 @@ import "fmt"
 
 const defaultTimeout = 50 * time.Millisecond
 
+// ProbeHosts will read hosts to probe from the given channel and check the given port and protocol for each of them.
+// Responding hosts will be written back into the second channel.
 func ProbeHosts(hosts <-chan string, port int, protocol string, respondingHosts chan<- string, done chan<- bool) {
 	adjustedTimeout := defaultTimeout
 	for host := range hosts {
